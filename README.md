@@ -4,11 +4,8 @@
 ### Team name: Cycle of Life
 ### Team members (format: GitHub username, last name, first name):
 - peterdjlee, Lee, Peter
-- , Li, Eric
-- , Khan, Khinshan
--
-- 
-- 
+- MrEricL, Li, Eric
+- kkhan01, Khan, Khinshan
 
 ### Group info (check all that apply - add an X in the [ ])
 - [ ] We are a CUNY2X bootcamp cohort team
