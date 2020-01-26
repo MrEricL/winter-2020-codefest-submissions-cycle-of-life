@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:cycle_of_life/util/option_button.dart';
+import 'package:cycle_of_life/util/uploading_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
@@ -15,10 +17,6 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<void> _cropImage() async {
     File cropped = (await ImageCropper.cropImage(
       sourcePath: _imageFile.path,
-      // ratioX: 1.0,
-      // ratioY: 1.0,
-      // maxWidth: 512,
-      // maxHeight: 512,
     ));
 
     setState(() {
@@ -43,9 +41,19 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Color.fromRGBO(50, 50, 50, 1.0),
       appBar: AppBar(
         title: Text("Cycle Of Life"),
+        actions: <Widget>[
+          _imageFile != null
+              ? IconButton(
+                  icon: Icon(Icons.clear),
+                  onPressed: () {
+                    _clear();
+                  },
+                )
+              : Container(),
+        ],
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -67,12 +75,12 @@ class _HomeScreenState extends State<HomeScreen> {
         _pickImage(ImageSource.gallery);
       },
       child: Container(
-        height: 125.0,
+        height: 75.0,
         width: double.infinity,
-        color: Colors.black87,
+        color: Color.fromRGBO(25, 25, 25, 1.0),
         child: Icon(
           Icons.camera_alt,
-          size: 40.0,
+          size: 30.0,
           color: Colors.white,
         ),
       ),
@@ -81,30 +89,35 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Container buildOptionsBar() {
     return Container(
-      height: 125.0,
+      height: 75.0,
       width: double.infinity,
-      color: Colors.black87,
+      color: Color.fromRGBO(25, 25, 25, 1.0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: <Widget>[
-          GestureDetector(
-            onTap: () {
-              _cropImage();
-            },
-            child: Icon(
-              Icons.crop,
-              size: 40.0,
-              color: Colors.white,
+          Expanded(
+            child: OptionButton(
+              onTap: _cropImage,
+              icon: Icons.crop,
             ),
           ),
-          GestureDetector(
-            onTap: () {
-              _clear();
-            },
-            child: Icon(
-              Icons.clear,
-              size: 40.0,
-              color: Colors.white,
+          Container(
+            width: 2.0,
+            height: 50.0,
+            color: Color.fromRGBO(255, 255, 255, 0.25),
+          ),
+          Expanded(
+            child: OptionButton(
+              onTap: () {
+                showDialog(
+                  context: context,
+                  barrierDismissible: false,
+                  builder: (BuildContext context) {
+                    return UploadingDialog(image: _imageFile);
+                  },
+                );
+              },
+              icon: Icons.check,
             ),
           ),
         ],
@@ -117,12 +130,12 @@ class _HomeScreenState extends State<HomeScreen> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
         Text(
-          "Don't know if you can recycle?",
-          style: TextStyle(color: Colors.black, fontSize: 16.0),
+          "Don't know if you can recycle something?",
+          style: TextStyle(color: Colors.white, fontSize: 16.0),
         ),
         Text(
-          "Take a picture!",
-          style: TextStyle(color: Colors.black, fontSize: 16.0),
+          "Take a picture of it!",
+          style: TextStyle(color: Colors.white, fontSize: 16.0),
         ),
       ],
     );
@@ -131,7 +144,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Image buildPhoto() {
     return Image.file(
       _imageFile,
-      fit: BoxFit.cover,
+      fit: BoxFit.contain,
     );
   }
 }
