@@ -1,23 +1,31 @@
 from flask import Flask, render_template, url_for, request, redirect, session
-import os
-import subprocess
+from fastai.vision import *
+
 
 app = Flask(__name__)
 
-DIRNAME = os.path.dirname(__file__)
-PROCESSNAME = os.path.join(DIRNAME, '..', 'mock-process', 'hello.py')
+# load the model here
+learn = load_learner("data")
 
-@app.route("/")
-def index():
-    p = subprocess.Popen('python ' + PROCESSNAME, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-    output = []
-    for line in p.stdout.readlines():
-        output.append(line.decode().strip())
-    retval = p.wait()
-    return "".join(output)
+# format: localhost:5000/?path=data%2Fglass422%2Ejpg
+
+@app.route('/', methods = ['POST','GET'])
+def root():
+	path = request.args['path']
+	waste_types = ['cardboard','glass','metal','paper','plastic','trash']
+
+	img = open_image(path)
+	result = learn.predict(img)
+	prob = [round(x.item()*100,2) for x in result[2]]
+	prob = sorted(zip(prob,waste_types), reverse=True) #list of likeliest material
+
+	return str(prob)
 
 
 
-if __name__ == "__main__":
-   app.debug = True
-   app.run(host="0.0.0.0", port=5000)
+if __name__=='__main__':
+	app.run(debug=True)
+
+
+
+
