@@ -17,7 +17,10 @@
 ### Flask endpoint
 1. Install `python` (preferabbly 3.7.3)
 2. We recommend making a virtual environment with `pyenv` or `virtualenv`
-3. Once the environment is active: `pip install -r api-endpoint/requirements.txt`
+3. Once the environment is active:
+```bash
+pip install -r api-endpoint/requirements.txt
+```
    - NOTES: 
      - `bottleneck`, a dependency for `fastai` isn't fully compatible with python 3.8 yet
        - This means it's possible it may or may not work on your machine
