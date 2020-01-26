@@ -12,7 +12,7 @@
 1. Install flutter from [official flutter website](https://flutter.dev/docs/get-started/install).
 2. Follow the [official flutter website](https://flutter.dev/docs/get-started/install) to ensure your install is properly done. Note, you will need android studio or xcode so that flutter can get the necessary libraries for android and ios compilation
 3. Once `flutter doctor` is okay, decide whether you want to use the app on your phone or through an emulator
-   - We recommend using it on your phone
+   - We recommend using it on an emulator
 4. 
 
 ## Backend
@@ -39,3 +39,6 @@ pip install fastai
 cd api-endpoint
 python app.py
 ```
+
+### Usage
+Once the steps above are done, simply snap/ upload some pictures and enjoy the analysis!
