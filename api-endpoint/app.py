@@ -2,6 +2,8 @@ from flask import Flask, render_template, url_for, request, redirect, session
 from fastai.vision import *
 import os
 import requests
+import urllib.request
+import base64
 
 
 app = Flask(__name__)
@@ -16,19 +18,36 @@ learn = load_learner("data")
 
 # format: localhost:5000/?img=URL
 
+def decode_img(encoded):
+        encoded = "+".join(encoded.split(" "))
+        img_bytes = io.BytesIO(base64.b64decode(encoded))
+        return img_bytes
+
+def decode_url(encoded):
+        encoded = "+".join(encoded.split(" "))
+        link = base64.b64decode(encoded).decode("utf-8")
+        return str(link)
+
+def download_url(url, name="imgs/test.jpg"):
+        urllib.request.urlretrieve(url, "imgs/test.jpg")
+
+
 @app.route('/', methods = ['POST','GET'])
 def root():
-        img_url = request.args['img']
-        img_name = img_url.split("/")[-1]
-        new_img = os.path.join(IMG_DIR, img_name)
+        # if base 64 image
+        #img_url = request.args['img']
+        #img = open_image(decode_img(img_url))
 
-        img_data = requests.get(img_url).content
-        with open(new_img, 'wb') as handle:
-                handle.write(img_data)
+        # if base 64 link
+        #img_url = request.args['img']
+        #download_url(decode_url(img_url))
+        #img = open_image("imgs/test.jpg")
+
 
         waste_types = ['cardboard','glass','metal','paper','plastic','trash']
 
-        img = open_image(new_img)
+        
+        #img = open_image("../test.jpg")
         result = learn.predict(img)
         prob = [round(x.item()*100,2) for x in result[2]]
         prob = sorted(zip(prob,waste_types), reverse=True) #list of likeliest material
