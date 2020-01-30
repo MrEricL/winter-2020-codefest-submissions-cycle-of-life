@@ -4,6 +4,7 @@ import os
 import requests
 import urllib.request
 import base64
+import json
 
 
 app = Flask(__name__)
@@ -29,6 +30,7 @@ def decode_url(encoded):
         return str(link)
 
 def download_url(url, name="imgs/test.jpg"):
+        print(url, "\n\n\n\n\n")
         urllib.request.urlretrieve(url, "imgs/test.jpg")
 
 
@@ -39,9 +41,12 @@ def root():
         #img = open_image(decode_img(img_url))
 
         # if base 64 link
-        #img_url = request.args['img']
-        #download_url(decode_url(img_url))
-        #img = open_image("imgs/test.jpg")
+        try:
+                img_url = request.args['img']
+                download_url(decode_url(img_url))
+                img = open_image("imgs/test.jpg")
+        except:
+                return "uh oh"
 
 
         waste_types = ['cardboard','glass','metal','paper','plastic','trash']
@@ -49,10 +54,18 @@ def root():
         
         #img = open_image("../test.jpg")
         result = learn.predict(img)
-        prob = [round(x.item()*100,2) for x in result[2]]
-        prob = sorted(zip(prob,waste_types), reverse=True) #list of likeliest material
+        only_prob = [round(x.item()*100,2) for x in result[2]]
+        prob = sorted(zip(only_prob,waste_types), reverse=True) #list of likeliest material
 
-        return str(prob)
+
+        #CHOOSE WHICH ONE YOU WANT
+        #a = {"res": prob}
+        #return json.dumps(a)
+
+        b = {waste_types[i]:only_prob[i] for i in range(len(only_prob))}
+        return json.dumps(b)
+
+        #return str(prob)
 
 
 
