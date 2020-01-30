@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:cycle_of_life/http/http_provider.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 
@@ -13,9 +14,6 @@ class UploadingDialog extends StatefulWidget {
 }
 
 class _UploadingDialogState extends State<UploadingDialog> {
-  final FirebaseStorage _storage =
-      FirebaseStorage(storageBucket: 'gs://cycle-of-life.appspot.com');
-
   StorageUploadTask _uploadTask;
   String downloadUrl;
 
@@ -23,15 +21,6 @@ class _UploadingDialogState extends State<UploadingDialog> {
   void initState() {
     super.initState();
     uploadToFirebaseStorage();
-  }
-
-  void _startUpload() {
-    /// Unique file name for the file
-    String filePath = 'images/${DateTime.now()}.png';
-
-    setState(() {
-      _uploadTask = _storage.ref().child(filePath).putFile(widget.image);
-    });
   }
 
   Future<void> uploadToFirebaseStorage() async {
@@ -44,9 +33,9 @@ class _UploadingDialogState extends State<UploadingDialog> {
     StorageTaskSnapshot taskSnapshot = await _uploadTask.onComplete;
 
     downloadUrl = await taskSnapshot.ref.getDownloadURL();
-    print(downloadUrl);
     if (downloadUrl != null) {
-      // TODO: make http request
+      HttpProvider httpProvider = HttpProvider();
+      httpProvider.getResponse(downloadUrl);
       Navigator.pop(context);
     }
   }
@@ -67,20 +56,13 @@ class _UploadingDialogState extends State<UploadingDialog> {
                 valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                 strokeWidth: 3.0,
               ),
-              // Center(
-              //   child: Text(
-              //     '${(progressPercent * 100).round()} % ',
-              //     style: TextStyle(
-              //       fontSize: 24.0,
-              //     ),
-              //   ),
-              // ),
             ],
           ),
         ),
         Text(
-          "Determining recyclability",
+          "Determining material",
           style: TextStyle(
+            color: Colors.white,
             fontSize: 16.0,
           ),
         ),
