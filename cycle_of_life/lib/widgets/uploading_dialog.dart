@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:cycle_of_life/http/http_provider.dart';
+import 'package:cycle_of_life/styles/colors.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 
@@ -52,9 +53,8 @@ class _UploadingDialogState extends State<UploadingDialog> {
             alignment: Alignment.center,
             children: <Widget>[
               CircularProgressIndicator(
-                value: progressPercent,
-                valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                strokeWidth: 3.0,
+                valueColor: AlwaysStoppedAnimation<Color>(Colors.black),
+                strokeWidth: 2.0,
               ),
             ],
           ),
@@ -62,7 +62,7 @@ class _UploadingDialogState extends State<UploadingDialog> {
         Text(
           "Determining material",
           style: TextStyle(
-            color: Colors.white,
+            color: Colors.black,
             fontSize: 16.0,
           ),
         ),
@@ -73,7 +73,7 @@ class _UploadingDialogState extends State<UploadingDialog> {
   @override
   Widget build(BuildContext context) {
     return Dialog(
-      backgroundColor: Color.fromRGBO(50, 50, 50, 1.0),
+      backgroundColor: kLighterWhite,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(15.0),
       ),
