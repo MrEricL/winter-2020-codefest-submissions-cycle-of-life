@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:cycle_of_life/http/http_provider.dart';
+import 'package:cycle_of_life/screens/result_screen.dart';
 import 'package:cycle_of_life/styles/colors.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -32,12 +33,22 @@ class _UploadingDialogState extends State<UploadingDialog> {
       _uploadTask = firebaseStorageRef.putFile(widget.image);
     });
     StorageTaskSnapshot taskSnapshot = await _uploadTask.onComplete;
-
+    
     downloadUrl = await taskSnapshot.ref.getDownloadURL();
     if (downloadUrl != null) {
       HttpProvider httpProvider = HttpProvider();
-      httpProvider.getResponse(downloadUrl);
-      Navigator.pop(context);
+      List result = await httpProvider.getResponse(downloadUrl);
+
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ResultScreen(
+            result: result,
+            image: widget.image,
+          ),
+        ),
+        (route) => route.isFirst,
+      );
     }
   }
 

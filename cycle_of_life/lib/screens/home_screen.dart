@@ -11,16 +11,15 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-
   /// Select an image via gallery or camera
   Future<void> _pickImage(ImageSource source) async {
     File selected = (await ImagePicker.pickImage(source: source));
 
     if (selected != null) {
-      print(selected.path);
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => EditScreen(imageFile: selected)),
+        MaterialPageRoute(
+            builder: (context) => EditScreen(imageFile: selected)),
       );
     }
   }
@@ -30,8 +29,13 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       backgroundColor: kBackgroundWhite,
       appBar: AppBar(
-        title: Text("Cycle Of Life", style: TextStyle(color: Colors.black),),
-        backgroundColor: kLighterWhite,
+        centerTitle: true,
+        title: Text(
+          "Cycle Of Life",
+          style: TextStyle(color: Colors.black),
+        ),
+        backgroundColor: Colors.transparent,
+        elevation: 0.0,
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -70,12 +74,13 @@ class _HomeScreenState extends State<HomeScreen> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
         Text(
-          "Don't know if you can recycle something?",
-          style: TextStyle(color: Colors.black, fontSize: 16.0),
+          'Don\'t know if you can recycle something?',
+          style: TextStyle(color: Colors.black, fontSize: 18.0),
         ),
+        SizedBox(height: 12.0),
         Text(
-          "Take a picture of it!",
-          style: TextStyle(color: Colors.black, fontSize: 16.0),
+          'Take a picture of it!',
+          style: TextStyle(color: Colors.black, fontSize: 18.0),
         ),
       ],
     );

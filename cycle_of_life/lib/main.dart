@@ -8,8 +8,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Cycle of Life',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(fontFamily: 'Raleway'),
-      // home: HomeScreen(),
       home: HomeScreen(),
     );
   }

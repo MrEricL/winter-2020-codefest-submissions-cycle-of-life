@@ -36,10 +36,12 @@ class _EditScreenState extends State<EditScreen> {
       backgroundColor: kBackgroundWhite,
       appBar: AppBar(
         title: Text(
-          "Cycle Of Life",
+          'Cycle Of Life',
           style: TextStyle(color: Colors.black),
         ),
-        backgroundColor: kLighterWhite,
+        centerTitle: true,
+        backgroundColor: Colors.transparent,
+        elevation: 0.0,
         iconTheme: IconThemeData(color: Colors.black),
       ),
       body: imageFile != null
@@ -59,9 +61,8 @@ class _EditScreenState extends State<EditScreen> {
   }
 
   Center buildErrorContainer() {
-    print(imageFile.path);
     return Center(
-      child: Text("Error: No image found"),
+      child: Text('Error: No image found'),
     );
   }
 
