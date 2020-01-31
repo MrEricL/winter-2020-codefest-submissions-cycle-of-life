@@ -88,12 +88,12 @@ def root():
 
         #CHOOSE WHICH ONE YOU WANT
         a = {"res": prob}
-        return json.dumps(a)
+        # return json.dumps(a)
 
-        b = {waste_types[i]:only_prob[i] for i in range(len(only_prob))}
-        if exposure[0] != 0:
-                b["exposure"] = exposure
-        return json.dumps(b)
+        # b = {waste_types[i]:only_prob[i] for i in range(len(only_prob))}
+        # if exposure[0] != 0:
+        a["exposure"] = exposure
+        return json.dumps(a)
 
         #return str(prob)
 
