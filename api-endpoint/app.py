@@ -5,6 +5,9 @@ import requests
 import urllib.request
 import base64
 import json
+import numpy as np
+import cv2 as cv
+from matplotlib import pyplot as plt
 
 
 app = Flask(__name__)
@@ -18,6 +21,30 @@ IMG_DIR = os.path.join(DIRNAME, 'imgs')
 learn = load_learner("data")
 
 # format: localhost:5000/?img=URL
+
+def check_exposure(loc):
+    img = cv.imread(loc,0)
+    hist,bins = np.histogram(img.flatten(),256,[0,256])
+    cdf = hist.cumsum()
+    cdf_25 = cdf[len(cdf)//4]/cdf[-1] * 100
+    cdf_75 = cdf[3*len(cdf)//4]/cdf[-1] * 100
+    exposure = None
+    if cdf_25 >= 60:
+        if cdf_25 >= 80:
+            exposure = (1, "very underexposed")
+        else:
+            exposure = (1, "a little underexposed")
+    elif cdf_75 <= 30:
+        if cdf_75 <= 20:
+            exposure = (2, "very overexposed")
+        else:
+            exposure = (2, "a little underexposed")
+    else:
+        exposure = (0, "")
+    
+    return exposure
+        
+
 
 def decode_img(encoded):
         encoded = "+".join(encoded.split(" "))
@@ -45,6 +72,7 @@ def root():
                 img_url = request.args['img']
                 download_url(decode_url(img_url))
                 img = open_image("imgs/test.jpg")
+                exposure = check_exposure("imgs/test.jpg")
         except:
                 return "uh oh"
 
@@ -52,7 +80,7 @@ def root():
         waste_types = ['cardboard','glass','metal','paper','plastic','trash']
 
         
-        #img = open_image("../test.jpg")
+        #img = open_image("wine.jpg")
         result = learn.predict(img)
         only_prob = [round(x.item()*100,2) for x in result[2]]
         prob = sorted(zip(only_prob,waste_types), reverse=True) #list of likeliest material
@@ -62,8 +90,10 @@ def root():
         a = {"res": prob}
         return json.dumps(a)
 
-        # b = {waste_types[i]:only_prob[i] for i in range(len(only_prob))}
-        # return json.dumps(b)
+        b = {waste_types[i]:only_prob[i] for i in range(len(only_prob))}
+        if exposure[0] != 0:
+                b["exposure"] = exposure
+        return json.dumps(b)
 
         #return str(prob)
 
