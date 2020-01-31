@@ -59,11 +59,11 @@ def root():
 
 
         #CHOOSE WHICH ONE YOU WANT
-        #a = {"res": prob}
-        #return json.dumps(a)
+        a = {"res": prob}
+        return json.dumps(a)
 
-        b = {waste_types[i]:only_prob[i] for i in range(len(only_prob))}
-        return json.dumps(b)
+        # b = {waste_types[i]:only_prob[i] for i in range(len(only_prob))}
+        # return json.dumps(b)
 
         #return str(prob)
 
