@@ -37,14 +37,17 @@ class _UploadingDialogState extends State<UploadingDialog> {
     downloadUrl = await taskSnapshot.ref.getDownloadURL();
     if (downloadUrl != null) {
       HttpProvider httpProvider = HttpProvider();
-      List result = await httpProvider.getResponse(downloadUrl);
+      Map result = await httpProvider.getResponse(downloadUrl);
+      List materials = result['res'];
+      String message = result['exposure'][1];
 
       Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(
           builder: (context) => ResultScreen(
-            result: result,
+            result: materials,
             image: widget.image,
+            message: message,
           ),
         ),
         (route) => route.isFirst,

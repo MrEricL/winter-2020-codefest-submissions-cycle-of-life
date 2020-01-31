@@ -1,20 +1,25 @@
 import 'dart:io';
-
-import 'package:cycle_of_life/styles/colors.dart';
 import 'package:cycle_of_life/widgets/info_dialog.dart';
+import 'package:cycle_of_life/widgets/warning_dialog.dart';
 import 'package:flutter/material.dart';
 
 class ResultScreen extends StatefulWidget {
   final List result;
   final File image;
+  final String message;
 
-  ResultScreen({this.result, this.image});
+  ResultScreen({this.result, this.image, this.message});
 
   @override
   _ResultScreenState createState() => _ResultScreenState();
 }
 
 class _ResultScreenState extends State<ResultScreen> {
+  @override
+  void initState() {
+    super.initState();
+  }
+
   Color determinePercentageColor(double percentage) {
     if (percentage > 30.0) {
       return Colors.green;
@@ -60,7 +65,15 @@ class _ResultScreenState extends State<ResultScreen> {
                   fit: BoxFit.contain,
                 ),
               ),
-              SizedBox(height: 24.0),
+              SizedBox(height: 12.0),
+              Tooltip(
+                message: widget.message,
+                child: Icon(
+                  Icons.warning,
+                  color: Colors.red,
+                ),
+              ),
+              SizedBox(height: 12.0),
               Expanded(
                 child: ListView.builder(
                   itemCount: widget.result.length,
