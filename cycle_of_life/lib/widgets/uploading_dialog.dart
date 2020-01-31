@@ -1,5 +1,8 @@
 import 'dart:io';
 
+import 'package:cycle_of_life/http/http_provider.dart';
+import 'package:cycle_of_life/screens/result_screen.dart';
+import 'package:cycle_of_life/styles/colors.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 
@@ -13,9 +16,6 @@ class UploadingDialog extends StatefulWidget {
 }
 
 class _UploadingDialogState extends State<UploadingDialog> {
-  final FirebaseStorage _storage =
-      FirebaseStorage(storageBucket: 'gs://cycle-of-life.appspot.com');
-
   StorageUploadTask _uploadTask;
   String downloadUrl;
 
@@ -23,15 +23,6 @@ class _UploadingDialogState extends State<UploadingDialog> {
   void initState() {
     super.initState();
     uploadToFirebaseStorage();
-  }
-
-  void _startUpload() {
-    /// Unique file name for the file
-    String filePath = 'images/${DateTime.now()}.png';
-
-    setState(() {
-      _uploadTask = _storage.ref().child(filePath).putFile(widget.image);
-    });
   }
 
   Future<void> uploadToFirebaseStorage() async {
@@ -42,12 +33,22 @@ class _UploadingDialogState extends State<UploadingDialog> {
       _uploadTask = firebaseStorageRef.putFile(widget.image);
     });
     StorageTaskSnapshot taskSnapshot = await _uploadTask.onComplete;
-
+    
     downloadUrl = await taskSnapshot.ref.getDownloadURL();
-    print(downloadUrl);
     if (downloadUrl != null) {
-      // TODO: make http request
-      Navigator.pop(context);
+      HttpProvider httpProvider = HttpProvider();
+      List result = await httpProvider.getResponse(downloadUrl);
+
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ResultScreen(
+            result: result,
+            image: widget.image,
+          ),
+        ),
+        (route) => route.isFirst,
+      );
     }
   }
 
@@ -63,24 +64,16 @@ class _UploadingDialogState extends State<UploadingDialog> {
             alignment: Alignment.center,
             children: <Widget>[
               CircularProgressIndicator(
-                value: progressPercent,
-                valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                strokeWidth: 3.0,
+                valueColor: AlwaysStoppedAnimation<Color>(Colors.black),
+                strokeWidth: 2.0,
               ),
-              // Center(
-              //   child: Text(
-              //     '${(progressPercent * 100).round()} % ',
-              //     style: TextStyle(
-              //       fontSize: 24.0,
-              //     ),
-              //   ),
-              // ),
             ],
           ),
         ),
         Text(
-          "Determining recyclability",
+          "Determining material",
           style: TextStyle(
+            color: Colors.black,
             fontSize: 16.0,
           ),
         ),
@@ -91,7 +84,7 @@ class _UploadingDialogState extends State<UploadingDialog> {
   @override
   Widget build(BuildContext context) {
     return Dialog(
-      backgroundColor: Color.fromRGBO(50, 50, 50, 1.0),
+      backgroundColor: kLighterWhite,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(15.0),
       ),

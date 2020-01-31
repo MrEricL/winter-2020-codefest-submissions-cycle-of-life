@@ -21,7 +21,7 @@ class _OptionButtonState extends State<OptionButton> {
         child: Icon(
           widget.icon,
           size: 30.0,
-          color: Colors.white,
+          color: Colors.black,
         ),
       ),
     );
